@@ -1,0 +1,22 @@
+{
+  "name": "twitchbot",
+  "version": "0.0.0",
+  "description": "Phirehero's Twitch Bot",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/crohde7707/twitchbot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crohde7707/twitchbot/issues"
+  },
+  "homepage": "https://github.com/crohde7707/twitchbot#readme",
+  "dependencies": {
+    "tmi.js": "^1.2.1"
+  }
+}
