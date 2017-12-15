@@ -15,12 +15,17 @@ var options = {
     channels: ["phirehero"]
 };
 
+var t2notify = {};
+
 var client = new tmi.client(options);
 client.connect();
 
 client.on('chat', function(channel, user, message, self) {
-	if(message === "!taco") {
-		client.action("phirehero", user['display-name'] + ", yes, yes they are delicious!");
+	//Tier 2 sub announcements
+	var username = user.username;
+	if(username === 'domma7' && !t2notify[username]) {
+	   t2notify[username] = true;
+	   client.say('phirehero', '!domma');
 	}
 });
 
