@@ -1,0 +1,2 @@
+!betting start Will Phire Survive?|15|10|150|true|Yes|No
+!betting stop

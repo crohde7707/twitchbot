@@ -1,0 +1,2 @@
+$readspecificline("C:\Users\itg8498\Documents\Ankhbot\top.txt",$num)
+Please keep it to a top 10 at most, $user

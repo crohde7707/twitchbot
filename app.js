@@ -2,6 +2,8 @@ var tmi = require('tmi.js');
 var fs = require('fs');
 var adventure = require('./games/adventure.js');
 
+var adventureActive = false;
+
 var options = {
     options: {
 	    debug: true
@@ -18,13 +20,18 @@ var options = {
 };
 
 var adventurerData = {
-   adventurers: [],
+   adventurers: {},
    equipment: {
       chests: [],
       weapons: []
    },
-   bosses: []
+   bosses: [],
+   loaded: false
 };
+
+var currentAdventurers = [];
+
+let adventureStartTimer;
 
 var t2notify = {};
 var goodBands = ['Paramore', 'John Mayer', 'Fall Out Boy'];
@@ -35,15 +42,6 @@ client.connect();
 client.on('chat', function(channel, user, message, self) {
 	//Tier 2 sub announcements
 	var username = user.username;
-	if(username === 'domma7' && !t2notify[username]) {
-	   t2notify[username] = true;
-	   client.say('phirehero', '!domma');
-	}
-
-	if(username === 'nyla18' && !t2notify[username]) {
-		t2notify[username] = true;
-		client.say('phirehero', '!nyla');
-	}
 
 	if(username === 'phirebot') {
 	   //Bot Specific messages
@@ -65,25 +63,67 @@ client.on('chat', function(channel, user, message, self) {
 
 	//Adventure
 	if(message.indexOf('!adventure') >= 0) {
-		console.log('We are going on an adventure!');
+		
+		if (adventurerData.loaded !== true) {
+			adventurerData.loaded = true;
+			client.action('phirehero', 'We are going on an adventure!');
 
-		let adv = loadAdventurers();
-		let eqp = loadEquipment();
-		let bosses = loadBosses();
+			let loaders = adventure.load(adventurerData);
 
-		Promise.all([adv, eqp, bosses]).then(function(data) {
-			console.log('Data loaded for adventure!');
-			saveAdventurers();
-		});
+			return Promise.all(loaders).then(function(data) {
+				console.log('Data loaded for adventure!');
+				adventure.saveAdventurers(adventurerData);
+
+				client.action('phirehero', "Type '!joinAdventure' to join in!");
+
+				adventureStartTimer = setTimeout(function() {
+					adventure.embark(adventurerData, currentAdventurers, client);
+				}, 5000)
+			});
+
+		} else {
+			console.log(adventurerData);
+			console.log('There is already an adventure in progress! Wait by the campfire for the next to start!');
+		}
+	}
+
+	if(message == '!createAdventurer') {
+		if(adventurerData.loaded) {
+			adventure.createAdventurer(user.username, adventurerData);
+			client.action('phirehero', '@' + user.username + ' has geared up for an adventure');
+			adventure.saveAdventurers(adventurerData);
+		}
+	}
+
+	if(message == '!resetAdventurer') {
+		if(adventurerData.loaded) {
+			adventure.resetAdventurer(user.username, adventurerData);
+			client.action('phirehero', '@' + user.username + ' had nerfed their adventure! Probably was a tad OP, TBF Kappa');
+			adventure.saveAdventurers(adventurerData);
+		}
+	}
+
+	if(message == '!myAdventurer') {
+		if(!adventurerData.loaded) {
+			let loaders = adventure.load(adventurerData);
+			Promise.all(loaders).then(function(data) {
+				adventure.provideStats(user.username, adventurerData, client);
+			})
+		} else {
+			adventure.provideStats(user.username, adventurerData, client);
+		}
+		
 	}
 
 	if(message == '!joinAdventure') {
-		createAdventurer(user.username);
-		saveAdventurers();
+		currentAdventurers.push[user.username];
+		client.action('phirehero', '@' + user.username + ' is ready to embark!');
 	}
 
-	//!embark, auto at 2 minutes
-
+	//!embark, auto at 3 minutes
+	if(message == '!embark') {
+		adventure.embark(adventurerData, currentAdventurers, client);
+	}
 	//!gear
 
 });

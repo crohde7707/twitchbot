@@ -1,0 +1,16 @@
+[
+	{
+		"name": "Goblin King",
+		"health": 13,
+		"attack": 2,
+		"speed": 2,
+		"loot": 1
+	},
+	{
+		"name": "The Three-Horned Jackalope",
+		"health": 14,
+		"attack": 2,
+		"speed": 4,
+		"loot": 1
+	}
+]

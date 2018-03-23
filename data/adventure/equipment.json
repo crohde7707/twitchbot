@@ -1,0 +1,144 @@
+{
+	"armor": {
+		"Cloth Tunic": {
+			"name": "Cloth Tunic",
+			"health": 1,
+			"defense": 1,
+			"speed": 1
+		},
+		"Leather Jerkin": {
+	 		"name": "Leather Jerkin",
+	 		"health": 1,
+	 		"defense": 2,
+	 		"speed": 1
+		},
+		"Crocskin Jerkin": {
+ 			"name": "Crocskin Jerkin",
+	 		"health": 2,
+	 		"defense": 2,
+	 		"speed": 1
+		},
+		"Bronze Chainmail": {
+ 			"name": "Bronze Chainmail",
+	 		"health": 3,
+	 		"defense": 1,
+	 		"speed": 2
+		},
+		"Tight-linked Bronze Chainmail": {
+ 			"name": "Tight-linked Bronze Chainmail",
+	 		"health": 3,
+	 		"defense": 2,
+	 		"speed": 2
+		},
+		"Iron Chainmail": {
+ 			"name": "Iron Chainmail",
+	 		"health": 4,
+	 		"defense": 3,
+	 		"speed": 2
+		},
+		"Tight-linked Iron Chainmail": {
+	 		"name": "Tight-linked Iron Chainmail",
+	 		"health": 4,
+	 		"defense": 4,
+	 		"speed": 3
+		},
+		"Steel Platemail": {
+	 		"name": "Steel Platemail",
+	 		"health": 5,
+	 		"defense": 2,
+	 		"speed": 3
+		},
+		"Reinforced Steel Platemail": {
+	 		"name": "Reinforced Steel Platemail",
+	 		"health": 5,
+	 		"defense": 3,
+	 		"speed": 3
+		},
+		"Carbide Plate": {
+	 		"name": "Carbide Plate",
+	 		"health": 5,
+	 		"defense": 4,
+	 		"speed": 4
+		},
+		"Dragonscale": {
+	 		"name": "Dragonscale",
+	 		"health": 6,
+	 		"defense": 5,
+	 		"speed": 4
+		},
+		"Wyrmscale": {
+	 		"name": "Wyrmscale",
+	 		"health": 6,
+	 		"defense": 5,
+	 		"speed": 5
+	 	}
+	},
+ 	"weapons": {
+ 		"Fists": {
+			 "name": "Fists",
+			 "attack": 1,
+			 "parry": 0,
+			 "speed": 1
+		}, 
+		"Dagger": {
+			 "name": "Dagger",
+			 "attack": 1,
+			 "parry": 0,
+			 "speed": 3
+		}, 
+		"Shortsword": {
+			 "name": "Shortsword",
+			 "attack": 2,
+			 "parry": 1,
+			 "speed": 1
+		}, 
+		"Hand Axe": {
+			 "name": "Hand Axe",
+			 "attack": 2,
+			 "parry": 1,
+			 "speed": 1
+		}, 
+		"Swift Axe": {
+			 "name": "Swift Axe",
+			 "attack": 2,
+			 "parry": 1,
+			 "speed": 3
+		}, 
+		"Scimitar": {
+			 "name": "Scimitar",
+			 "attack": 2,
+			 "parry": 1,
+			 "speed": 2
+		}, 
+		"Broadsword": {
+			 "name": "Broadsword",
+			 "attack": 3,
+			 "parry": 2,
+			 "speed": 1
+		}, 
+		"Greatsword": {
+			 "name": "Greatsword",
+			 "attack": 3,
+			 "parry": 3,
+			 "speed": 2
+		}, 
+		"Hardened Greatsword": {
+			 "name": "Hardened Greatsword",
+			 "attack": 4,
+			 "parry": 3,
+			 "speed": 2
+		}, 
+		"Lightning Blades": {
+			 "name": "Lightning Blades",
+			 "attack": 4,
+			 "parry": 2,
+			 "speed": 5
+		}, 
+		"Flametongue": {
+			 "name": "Flametongue",
+			 "attack": 4,
+			 "parry": 3,
+			 "speed": 3
+		}
+ 	}
+}

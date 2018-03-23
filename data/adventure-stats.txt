@@ -1,0 +1,37 @@
+Stats
+Weapon:
+ Attack
+ Parry
+ Speed
+
+Armor:
+ Health
+ Defense
+ Speed
+
+Armor - Chest
+ - Cloth Tunic 1/1/1
+ - Leather Jerkin 1/2/1
+ - Crocskin Jerkin 2/2/1
+ - Bronze Chainmail 3/1/2
+ - Tight-linked Bronze Chainmail 3/2/2
+ - Iron Chainmail 4/3/2
+ - Tight-linked Iron Chainmail 4/4/3
+ - Steel Platemail 5/2/3
+ - Reinforced Steel Platemail 5/3/3
+ - Carbide Plate 5/4/4
+ - Dragonscale 6/5/4
+ - Wyrmscale 6/5/5
+
+Weapon
+ - Fists 1/0/1
+ - Dagger 1/0/3
+ - Shortsword 2/1/1
+ - Hand Axe 2/1/1
+ - Swift Axe 2/1/3
+ - Scimitar 2/1/2
+ - Broadsword 3/2/1
+ - Greatsword 3/3/2
+ - Hardened Greatsword 4/3/2
+ - Lightning Blades 4/2/5
+ - Flametongue 4/3/3
