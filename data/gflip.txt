@@ -1,3 +1,3 @@
-$addpoints("$user","25","100","Heads! $value tacos have been added into yo bag! TBTacoBag","No tacos for you")
-$removepoints("$user","25","100","Tails! $value tacos have been taken from yo bag! :(","Not enough tacos!","false")
-It's side, and rolls away.....damnit
+$addpoints("$user","25","100","Heads! $value tacos have been added into your bag! phirehHype","No tacos for you")
+$removepoints("$user","25","100","Tails! $value tacos have been taken from your bag! :(","Not enough tacos!","false")
+it's side, and rolls away.....damnit

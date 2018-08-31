@@ -1,0 +1,200 @@
+{
+	"stage1": [
+		{
+			"msg": [
+				"The adventurers have stumbled upon a strange boulder in the middle of a cave.",
+				"Should we 1) Leave it as is, or 2) Touch the boulder (Type !vote [1/2])"
+			],
+			"success": [
+				{
+					"msg": "{ADVENTURER} decided to play it safe and send everyone around the boulder. Your tacos are safe!",
+					"tacos": [0, 0]	
+				},
+				{
+					"msg": "Upon touching a boulder, a click resonates, revealing a stockpile of tacos!",
+					"tacos": [50, 100]
+				}
+			],
+			"failure": [
+				{
+					"msg": "{ADVENTURER} decided to play it safe and send everyone around the boulder. Your tacos are safe!",
+					"tacos": [0, 0]	
+				},
+				{
+					"msg": "Upon touching the boulder, a swarm of bats fly toward your party, causing you to drop your taco bag in a panic!",
+					"tacos": [25, 50]
+				}
+			]
+		},
+		{
+			"msg": [
+				"The adventurers come across a nest with a baby bird chirping inside.",
+				"Should we 1) Leave the bird alone, 2) Feed it, or 3) Search the nest? (Type !vote [1/2/3])"
+			],
+			"success": [
+				{
+					"msg": "{ADVENTURER} decided to play it safe and lead the group away from the nest. Certainly didn't want to risk those tacos!",
+					"tacos": [0, 0]
+				},
+				{
+					"msg": "{ADVENTURER} crushed a taco up and gave it to the bird. While the bird was eating, the adventurers find a golden taco underneath the nest! PogChamp",
+					"tacos": [50, 100]
+				}, {
+					"msg": "{ADVENTURER} searched the nest, and found a few tacos nestled inside the twigs!",
+					"tacos": [50, 100]
+				}
+			],
+			"failure": [
+				{
+					"msg": "{ADVENTURER} decided to play it safe and lead the group away from the nest. Certainly didn't want to risk those tacos!",
+					"tacos": [0, 0]
+				},
+				{
+					"msg": "When {ADVENTURER} went to feed the baby bird, they didnt notice the mother swooping down upon them. In a panic, each adventurer lost a few tacos BibleThump",
+					"tacos": [25, 50]
+				}, {
+					"msg": "Ignoring the baby, {ADVENTURER} shoved their hand into the nest, then recoiled as the mother came squaking! To get away, everyone threw tacos at the mother. LUL",
+					"tacos": [25, 50]
+				}
+			]
+		},
+		{
+			"msg": [
+				"After turning the corner, you come to a room with 3 exits.",
+				"Should you take 1) Left Exit, 2) Center Exit, or 3) Right Exit? (Type !vote [1/2/3]"
+			],
+			"success": [
+				{
+					"msg": "The group ventured down the left path. Along the way, {ADVENTURER} tripped over a lockbox, containing a bronze taco! PogChamp",
+					"tacos": [50, 100]
+				},
+				{
+					"msg": "The group kept their course down the center path. Up against a wall, they found a knapsack filled with crispy tacos!",
+					"tacos": [50, 100]
+				},
+				{
+					"msg": "The group decided on the right path to continue on. A bat flew over, dropping a silver taco-shaped trinket into {ADVENTURER}'s bag!",
+					"tacos": [50, 100]
+				}
+			],
+			"failure": [
+				{
+					"msg": "The group ventured down the left path. Along the way, {ADVENTURER} tripped over a lockbox, containing.....a moldy taco.. WutFace",
+					"tacos": [25, 50]
+				},
+				{
+					"msg": "The group kept their course down the center path. Suddenly, a boulder started rolling toward them! A few tacos were lost in their narrow escape!",
+					"tacos": [25, 50]
+				},
+				{
+					"msg": "The group decided on the right path to continue on. The floor crumbled below their feet, causing the adventurers to fall into a pit. Safety was only ensured by landing on the taco bag BibleThump",
+					"tacos": [25, 50]
+				}
+			]
+		}
+	],
+	"stage2": [
+		{
+			"msg": [
+				"You enter a room filled with unstable rock formations on the ceilings. {ADVENTURER} stepped forward, and triggered a pressure plate. cmonBruh ",
+				"A rumble started in the room, and you can see the formations wobbling and starting to crack!",
+				"Choose how to approach this situation: 1) Sprint to the other side, 2) Slide across the floor on a shield found discarded, or 3) Wait for the ordeal to stop"
+			],
+			"success": [
+				{
+					"msg": [
+						"The group manages to sprint across the room before the collapse occured, completely unscathed!",
+						"{ADVENTURER} leaned against the wall, causing a stone to slide, revealing a cache of shiny bronze tacos! SeemsGood"
+					],
+					"tacos": [100, 200]
+				},
+				{
+					"msg": [
+						"The group grabs the shields and take off sliding across the floor, narrowly escaping the last bit of rocks that caved in!",
+						"{ADVENTURER} found that his shield snagged a bag of silver tacos during their escape! phirehHype"
+					],
+					"tacos": [100, 200]
+				},
+				{
+					"msg": [
+						"Deciding to wait, {ADVENTURER} took a step back, triggering another pressure plate, causing the rumble to stop!",
+						"Across the room, a bag fell from the ceiling, revealing a stash of golden tacos! PogChamp"
+					],
+					"tacos": [100, 200]
+				}
+			],
+			"failure": [
+				{
+					"msg": "While sprinting, {ADVENTURER} tripped over from the shaking, dropping some tacos in the process! YOU HAD ONE JOB!",
+					"tacos": [50, 100]
+				},
+				{
+					"msg": "While sliding across on the shields, {ADVENTURER} slipped off, tearing their bag of tacos. The humanity...",
+					"tacos": [50, 100]
+				},
+				{
+					"msg": "Unfortunately, the ceiling caved in while your group waited. Those tacos were too tempting while clearing the debris!",
+					"tacos": [50, 100]
+				}
+			]
+		},
+		{
+			"msg": [
+				"The adventurers approach a huge chasm with a broken bridge",
+				"Choose how to approach this situation: 1) Attempt to jump, 2) Fashion a bridge, or 3) Find another route around"
+			],
+			"success": [
+				{
+					"msg": [
+						"{ADVENTURER}, daring of them all, leaped across the chasm, landing safely on the opposite ledge",
+						"They found a rope to help the others across, not before finding a small bronze taco underneath the rope! phirehHype "
+					],
+					"tacos": [100, 200]
+				},
+				{
+					"msg": [
+						"The group scavanged around, finding twigs, wood, and twine to build a bridge to cross",
+						"All adventures managed to cross on the bridge, & {ADVENTURER} managed to trip over a silver taco buried in the ground! SeemsGood "
+					],
+					"tacos": [100, 200]
+				},
+				{
+					"msg": [
+						"Deciding to find an alternative route, {ADVENTURER} lead the group down a different path",
+						"{ADVENTURER}, along the way, found a little nook containing a Shiny Gold Taco! PogChamp "
+					],
+					"tacos": [100, 200]
+				}
+			],
+			"failure": [
+				{
+					"msg": "{ADVENTURER} ran to leap across, but came up short, falling into the pit. It took many tacos to heal that wound!",
+					"tacos": [50, 100]
+				},
+				{
+					"msg": [
+						"The group scavanged around, finding twigs, wood, and twine to build a bridge to cross",
+						"Unfortunately, {ADVENTURER} didn't know how to tie knots, so the bridge collapsed, w/ everyone on it!",
+						"Everyone landed heavily on their taco bags, hearing the crunch of dissapointment FailFish "
+					],
+					"tacos": [50, 100]
+				},
+				{
+					"msg": [
+						"Deciding to find an alternative route, {ADVENTURER} lead the group down a different path",
+						"Unfortunately, that path was filled with taco-eating snakes! No one was bitten, but the same couldn't be said for the stash BibleThump "
+					],
+					"tacos": [50, 100]
+				}
+			]
+		}
+	],
+	"finalStage": {
+		"msg": [
+			"You have arrived at the darkest room in the cave, and hear the growl of {BOSS}!",
+			"Ready your weapons: !ready, or flee with your loot: !flee"
+		],
+		"success": "Each adventurer fought bravely, striking true against {BOSS}. {ADVENTURER} delivered the final blow, sneaking a few tacos out of the loot before the divy! LUL",
+		"failure": "{BOSS} had proved to be too much to handle, causing each adventurer to flee for their lives. A shame their taco bag was left open during the escape! BibleThump"
+	}
+}
