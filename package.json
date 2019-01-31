@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/crohde7707/twitchbot#readme",
   "dependencies": {
-    "tmi.js": "^1.2.1"
+    "jsonfile": "^5.0.0",
+    "tmi.js": "^1.2.1",
+    "twitter": "^1.7.1"
   }
 }

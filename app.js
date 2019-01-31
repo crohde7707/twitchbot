@@ -1,6 +1,17 @@
 var tmi = require('tmi.js');
 var fs = require('fs');
-var adventure = require('./games/adventure.js');
+var jsonfile = require('jsonfile');
+//var adventure = require('./games/adventure.js');
+var SpicyTacos = require('./spicy-tacos.js');
+
+var Twitter = require('twitter');
+
+var twitterClient = new Twitter({
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
+  consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
+  access_token_key: process.env.TWITTER_ACCESS_TOKEN_KEY,
+  access_token_secret: process.env.TWITTER_ACCESS_TOKEN_SECRET
+});
 
 var adventureActive = false;
 
@@ -19,184 +30,306 @@ var options = {
     channels: ["phirehero"]
 };
 
-var adventurerData = {
-   activeScenario: {},
-   adventurers: {},
-   bosses: {},
-   difficulty: "",
-   equipment: {
-      chests: [],
-      weapons: []
-   },
-   loaded: false,
-   loot: 0,
-   nextStep: false,
-   scenarios: {},
-   vote: {
-   	  voteCount: 0,
-   	  votes: {},
-   	  voteActive: false
-   }
-};
+//Load up Spicy Taco Data
+const SpicyTacoFile = './data/spicytacos.json';
+const twitterLookup = './data/twitter-twitch.json';
 
-var currentAdventurers = [];
+var SpicyTacoData = jsonfile.readFileSync(SpicyTacoFile);
+var blacklist = jsonfile.readFileSync('./data/blacklist.json');
 
-let adventureStartTimer;
+let subs = {};
+
+console.log(SpicyTacoData);
+
+let babies = 0;
+let spicyTacosEnabled = true;
 
 var t2notify = {};
-var goodBands = ['Paramore', 'John Mayer', 'Fall Out Boy'];
 
 var client = new tmi.client(options);
 client.connect();
 
 //Execute early message after 10 minutes
 var earlyMsg = setTimeout(function() {
+	//client.action('phirehero', 'is handing out your daily Spicy Taco coin! You will be able to use these for the monthly giveaway! Keep it safe!');
+    distributeSpicyTacos();
+    saveTokensToFile();
+	spicyTacosEnabled = false;
+}, 900000);
+
+var earlyMsg = setTimeout(function() {
 	client.action('phirehero', 'is handing out a second serving of tacos to all you early arrivals! Enjoy! phirehHype phirehHype phirehHype');
+	spicyTacosEnabled = false;
 }, 600000);
 
-client.on('chat', function(channel, user, message, self) {
-	//Tier 2 sub announcements
-	var username = user.username;
+// var charity = setTimeout(function() {
+// 	client.say('phirehero', 'Merry Christmas and Happy Holidays! We are celebrating the last day of our "12 Days of Christmas" charity event by reading "A Christmas Carol" by Charles Dickens! Feel free to pull up a chair and enjoy the story! Thank you so much for stopping by! phirehHype')
+// }, 600000);
 
-	if(username === 'phirebot') {
-	   //Bot Specific messages
-	   //Song request rewards
-	   var band = message.substring(message.indexOf('The song') + 9, message.indexOf(' - '));
-	   var viewer = message.substring(0, message.indexOf(' -->'));
-	   if(goodBands.includes(band)) {
-              client.action('phirehero', 'phirehHype Good Band Request Roulette Chance! phirehHype')
-              var num = Math.floor(Math.random() * 100) + 1;
-              var response = 'Roulette Result: ' + num;
-              if(num >= 50) {
-		      client.action('phirehero', response + '! ' + viewer + ' is rewarded 25 tacos!');
-		      client.say('phirehero', '!tacos Add ' + viewer + ' 25');
-	      } else {
-                 client.action('phirehero', response + '. no tacos for ' + viewer + ' :(');
-	      }
-	   }
-	}
+var phirestarters = [];
+var bounty;
+var bountyFound = false;
+var bounties = [];
+var guessed = [];
 
-	//Adventure
-	if(message.indexOf('!adventure') >= 0) {
+/*var bountyTimer = setTimeout(function() {
+	if(bounty) {
 		
-		if (adventurerData.loaded !== true) {
-			adventurerData.loaded = true;
-			client.action('phirehero', 'We are going on an adventure!');
-
-			let loaders = adventure.load(adventurerData);
-
-			return Promise.all(loaders).then(function(data) {
-				console.log('Data loaded for adventure!');
-				adventure.saveAdventurers(adventurerData);
-
-				client.action('phirehero', "Type '!joinAdventure' to join in!");
-
-				// Embark after 5 minutes
-				adventureStartTimer = setTimeout(function() {
-					adventure.embark(adventurerData, currentAdventurers, client);
-				}, 45000)
-			});
-
-		} else {
-			client.action('phirehero', 'There is already an adventure in progress! Wait by the campfire for the next to start!');
+		bounties.push(bounty);
+	    
+	    if(!bountyFound) {
+			client.action('phirehero', 'The previous bounty @' + bounty + ' got away with all the tacos!');
+			client.say('phirehero', '!Tacos Add ' + viewer + ' 100');
 		}
 	}
 
-	if(message == '!createAdventurer') {
-		if(adventurerData.loaded) {
-			adventure.createAdventurer(user.username, adventurerData);
-			client.action('phirehero', '@' + user.username + ' has geared up for an adventure for the first time!');
-			adventure.saveAdventurers(adventurerData);
-		}
-	}
+	var bountyChosen = false;
 
-	if(message == '!resetAdventurer') {
-		if(adventurerData.loaded) {
-			adventure.resetAdventurer(user.username, adventurerData);
-			client.action('phirehero', '@' + user.username + ' had nerfed their adventure! Probably was a tad OP, TBF Kappa');
-			adventure.saveAdventurers(adventurerData);
-		}
-	}
-
-	if(message == '!myAdventurer') {
-		if(!adventurerData.loaded) {
-			let loaders = adventure.load(adventurerData);
-			Promise.all(loaders).then(function(data) {
-				adventure.provideStats(user.username, adventurerData, client);
-			})
-		} else {
-			adventure.provideStats(user.username, adventurerData, client);
-		}
+	while (!bountyChosen) {
+		bounty = phirestarters[Math.floor(Math.random() * Math.floor(phirestarters.length))];
 		
-	}
-
-	if(message == '!joinAdventure') {
-		if(adventurerData.loaded) {
-			if(!adventurerData.adventurers[user.username]) {
-				adventure.createAdventurer(user.username, adventurerData);
-				client.action('phirehero', '@' + user.username + ' has geared up for an adventure for the first time!');
-				adventure.saveAdventurers(adventurerData);
-			}
-
-			if(currentAdventurers.indexOf(user.username) > -1) {
-				client.whisper(user.username, 'You are already joined in on the adventure!');
-			} else {
-				currentAdventurers.push(user.username);
-				client.action('phirehero', '@' + user.username + ' is ready to embark!');
-			}
+		if(!bounties.includes(bounty)) {
+			bountyChosen = true;
 		}
 	}
 
-	//!embark, auto at 3 minutes
-	if(message == '!embark') {
-		adventure.embark(adventurerData, currentAdventurers, client);
-	}
+	guessed = [];
+
+	client.action('phirehero', 'A new bounty has been issued! Use "!bounty [user]" to find the culprit, and collect your tacos!');
 	
+}, 900000);*/
 
+var earlyBirds = [];
+
+client.on("join", function (channel, username, self) {
+	if(spicyTacosEnabled) {
+    	if(!earlyBirds[username] && !blacklist[username]) {
+    		earlyBirds[username] = true;
+    		console.log(username + " is getting a coin when the time comes!");
+    	}
+    }
+});
+
+client.on("part", function (channel, username, self) {
+	if(spicyTacosEnabled) {
+		if(earlyBirds[username] && !blacklist[username]) {
+			earlyBirds[username] = false;
+			console.log(username + " is NOT getting a coin when the time comes!");
+		}
+	}
 });
 
 client.on('whisper', function (from, userstate, message, self) {
 	if(self) return;
 
-	if(adventurerData.loaded && adventurerData.vote.voteActive) {
-		if(message.indexOf('!vote') === 0) {
-			//Adventurer is voting
-			let vote = message.substring(message.indexOf('!vote') + 5);
+	if(from === "#phirehero" && message === "!savetokens") {
+		saveTokensToFile();
+	}
 
-			try {
-				adventurerData.vote.votes[from] = Number.parseInt(vote)
-			} catch (e) {
-				adventurerData.vote.votes[from] = 1
-			}
-			
-			
-			adventurerData.vote.voteCount++;
+});
 
-			//check if this is last vote needed
-			if(adventurerData.vote.voteCount === currentAdventurers.length) {
-				//continue Adventure
-				adventurerData.vote.voteCount = 0;
-				
-				adventurerData.vote.voteActive = false;
-				adventure[adventurerData.nextStep].call(this, adventurerData, currentAdventurers, client);
-			}
-		} else if(message.indexOf('!ready') === 0 || message.indexOf('!flee') === 0) {
-			let vote = message.substr(1);
-
-			if (vote === 'ready' || vote === 'flee') {
-				adventurerData.vote.votes[from] = vote;
-				adventurerData.vote.voteCount++;
-			}
-			//check if this is last vote needed
-			if(adventurerData.vote.voteCount === currentAdventurers.length) {
-				//continue Adventure
-				adventurerData.vote.voteCount = 0;
-				
-				adventurerData.vote.voteActive = false;
-				adventure[adventurerData.nextStep].call(this, adventurerData, currentAdventurers, client);
-			}
-		}
-
+var saveTokensToFile = function() {
+	console.log(SpicyTacoData);
 		
+	jsonfile.writeFile(SpicyTacoFile, SpicyTacoData, { spaces: 2 }, function (err) {
+		if (err) {
+			console.error(err);
+		} else {
+			console.log("Data saved successfully!");
+		}
+	});
+}
+
+client.on("subscription", function (channel, username, method, message, userstate) {
+	console.log(username + " just subscribed to the channel! Thier method was: " + method);
+	subs[username] = {
+		method: method,
+		message: message,
+		userstate: userstate
+	};
+    if(!SpicyTacoData[username]) {
+		SpicyTacoData[username] = 1
+	} else {
+		SpicyTacoData[username]++;
 	}
 });
+
+client.on("resub", function(channel, username, months, message, userstate, method) {
+	console.log(username + " just resubbed to the channel! Thier method was: " + method);
+	
+	subs[username] = {
+		method: method,
+		months: months,
+		message: message,
+		userstate: userstate
+	};
+
+	if(!SpicyTacoData[username]) {
+		SpicyTacoData[username] = 1
+	} else {
+		SpicyTacoData[username]++;
+	}
+});
+
+client.on('chat', function(channel, user, message, self) {
+	
+	var username = user.username;
+
+	if(spicyTacosEnabled) {
+		if(!earlyBirds[username] && !blacklist[username]) {
+			earlyBirds[username] = true;
+			console.log(username + " is getting a coin when the time comes!");
+		}
+	}	
+
+	if(!phirestarters.includes(username)) {
+		phirestarters.push(username);
+	}
+
+	if(message.indexOf('!bounty') >=0) {
+		if(guessed.includes(username)) {
+			client.action('phirehero', '@' + username + ', you have already guessed for this bounty!');
+		} else {
+			guessed.push(username);	
+		}
+		
+	}
+
+	if(username === 'phirebot') {
+	   //Bot Specific messages
+	}
+
+	let allow = user.username === 'phirehero' || user.mod;
+
+	if(message.indexOf('!addbaby') >= 0 && allow) {
+		//TODO: default add 1
+		let number = 1;
+
+		if(message.length >= 9) {
+			number = Number.parseInt(message.substr(9));
+		}
+
+		babies = babies + number;
+
+		fs.writeFileSync('/Users/crohd/Desktop/streaming/babies.txt', '' + babies + ' / 100');
+	}
+
+	if(message.indexOf('!testtacos') >= 0) {
+		client.say('phirehero', '!Tacos Add phirehero 100');
+	}
+
+	if(message.indexOf('!removebaby') >= 0 && allow) {
+		let number = 1;
+
+		if(message.length >= 12) {
+			number = Number.parseInt(message.substr(12));
+		}
+
+		babies = babies - number;
+
+		fs.writeFileSync('/Users/crohd/Desktop/streaming/babies.txt', '' + babies + ' / 100');
+	}
+
+	if(message.indexOf('!happy') >= 0 || message.indexOf('!normal') >= 0) {
+		fs.copyFileSync('../plumbobs/happy_plumbob.gif', '../plumbobs/plumbob.gif');
+	}
+
+	if(message.indexOf('!inspired') >= 0) {
+		fs.copyFileSync('../plumbobs/inspired_plumbob.gif', '../plumbobs/plumbob.gif');
+	}
+
+	if(message.indexOf('!rage') >= 0 || message.indexOf('!angry') >= 0 || message.indexOf('!frustrated') >= 0) {
+		fs.copyFileSync('../plumbobs/rage_plumbob.gif', '../plumbobs/plumbob.gif');
+	}
+
+	if(message.indexOf('!embarrassed') >= 0 || message.indexOf('!uncomfortable') >= 0 || message.indexOf('!derp') >= 0) {
+		fs.copyFileSync('../plumbobs/embarrased_plumbob.gif', '../plumbobs/plumbob.gif');
+	}
+
+	if(message.indexOf('!focused') >= 0) {
+		fs.copyFileSync('../plumbobs/focused_plumbob.gif', '../plumbobs/plumbob.gif');	
+	}
+
+	if(message.indexOf('!stressed') >= 0 || message.indexOf('!tense') >= 0) {
+		fs.copyFileSync('../plumbobs/tense_plumbob.gif', '../plumbobs/plumbob.gif');	
+	}	
+
+});
+
+let stream = twitterClient.stream('statuses/filter', { track: '#phirestarters, #phiretacos'});
+
+var tweetsToProcess = [];
+
+stream.on('data', function (tweet) {
+	//Look up person in mapping file
+	//If exist, give tacos
+	//If not, do nothing
+	let user = (tweet.user & tweet.user.screen_name) ? tweet.user.screen_name : "";
+
+	
+	if(twitterLookup[user]) {
+		client.say('phirehero', '@' + twitterLookup[user] + ', thanks for the retweet!');
+		client.say('phirehero', '!Tacos Add ' + twitterLookup[user] + ' 100');
+	} else {
+		client.action('phirehero', 'Make sure to link your twitter & twitch to receive tacos for those retweets! !link');
+	}
+	console.log(tweet.user.screen_name + " just tweeted the stream!");
+});
+
+var distributeSpicyTacos = function() {
+	Object.keys(earlyBirds).map(function(member, index) {
+		if(SpicyTacoData[member]) {
+			SpicyTacoData[member]++
+		} else {
+			SpicyTacoData[member] = 1;
+		}
+	});
+};
+
+
+
+// var originalTweet = '1085995122674692096';
+
+// var query = {
+// 	q: '#phirestarters, #phiretacos',
+// 	result_type: 'recent',
+// 	since_id: originalTweet
+// };
+
+// let retweetChecker = function() {
+// 	twitterClient.get('search/tweets', query, function(err, data) {
+// 		console.log(data);
+// 		if (!err) {
+
+// 			console.log(data.statuses.length);
+
+// 			if(data.statuses.length > 0) {
+// 				//We have tweets!
+// 				console.log("We have tweets!\n\n")
+// 				let first = true;
+// 				data.statuses.forEach(function(tweet) {
+// 					if(first) {
+// 						console.log("Getting a new tweet id set")
+// 						//Set the latest tweet we had gotten, to search for newer on the next round
+// 						query.since_id = tweet.id_str;
+// 						first = false;
+// 					}
+
+// 					console.log(tweet.user.screen_name + " just tweeted the stream!");
+// 				});
+// 			}
+			
+// 			console.log("latest tweet id: " + query.since_id);
+
+// 		} else {
+// 			console.log('Something went wrong while searching...');
+// 			console.log(err);
+// 		}
+// 	});
+// }
+
+// retweetChecker();
+
+// setTimeout(retweetChecker, /*300000*/60000);
+
+
